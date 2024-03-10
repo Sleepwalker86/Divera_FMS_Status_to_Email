@@ -138,7 +138,7 @@ def main():
                             message = f"Ein Fahrzeug ({shortname}) ist aktuell nicht einsatzbereit. \nID: {id},\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
 
                         # E-Mail senden
-                        if receiver_emails & email_enable:
+                        if receiver_emails and email_enable:
                             # E-Mail senden
                             send_email(message, shortname, sender_email, receiver_emails, password, smtp_server, smtp_port)
                         else:
