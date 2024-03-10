@@ -51,6 +51,10 @@ Modules: urllib.request, json, smtplib, email.mime, os, datetime, logging
 The script expects a configuration file `config.json` where the required information such as API key, email settings, and receiver addresses are set. An example file `example-config.json` is included in the repository.
 You need to copy this file and adjust it according to your information.
 
+````
+cp example-config.json config.json
+````
+
 ```json
 {
     "api_key": "YOUR-API-KEY",
