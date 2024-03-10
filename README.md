@@ -1,4 +1,4 @@
-# Divera FMS Status Fahrzeugstatusüberwachungs Skript Divera 24/7
+# Fahrzeugstatusüberwachungs Skript für Divera 24/7
 
 Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Benutzer per E-Mail und Push-Nachricht, wenn ein Fahrzeugstatus von oder zu 6 wechselt.
 
@@ -13,7 +13,6 @@ Sie müssen diese Datei kopieren und entsprechend Ihren Informationen anpassen.
 
 cp example-config.json config.json
 ````
-```
 {
     "api_key": "YOUR-API-KEY",
     "sender_email": "sender@example.de",
@@ -25,10 +24,9 @@ cp example-config.json config.json
         "receiver2@example.de"
     ],
     "message_users_fremdschluessel": "1000,1001",
-    "message_rics": "22,23",
+    "message_rics": "group1, group2",
     "status_dict": {}
 }
-```
 ````
 
 ## Verwendung
