@@ -10,10 +10,10 @@ Module: urllib.request, json, smtplib, email.mime, os, datetime, logging
 ## Konfiguration
 Das Skript erwartet eine Konfigurationsdatei config.json, in der die erforderlichen Informationen wie API-Schlüssel, E-Mail-Einstellungen und Empfängeradressen festgelegt sind. Eine Beispieldatei example-config.json ist im Repository enthalten.
 Sie müssen diese Datei kopieren und entsprechend Ihren Informationen anpassen.
-````
+```
 cp example-config.json config.json
-````
-````
+```
+```
 {
     "api_key": "YOUR-API-KEY",
     "sender_email": "sender@example.de",
@@ -28,16 +28,16 @@ cp example-config.json config.json
     "message_rics": "group1, group2",
     "status_dict": {}
 }
-````
+```
 
 ## Verwendung
 Führen Sie das Skript aus, und verwenden Sie einen Cronjob, um regelmäßig den Fahrzeugstatus zu überprüfen.
 
-````
+```
 crontab -e
 
 */5 * * * * /usr/bin/python3 /home/pi/Divera_FMS/main.py >> /home/pi/Divera_FMS/log.txt 2>&1
-````
+```
 
 Dieser Cronjob überprüft alle 5 Minuten den Fahrzeugstatus und protokolliert die Ausgabe in die Datei log.txt.
 
@@ -56,9 +56,9 @@ Modules: urllib.request, json, smtplib, email.mime, os, datetime, logging
 The script expects a configuration file `config.json` where the required information such as API key, email settings, and receiver addresses are set. An example file `example-config.json` is included in the repository.
 You need to copy this file and adjust it according to your information.
 
-````
+```
 cp example-config.json config.json
-````
+```
 
 ```json
 {
@@ -75,7 +75,7 @@ cp example-config.json config.json
     "message_rics": "group1, group2",
     "status_dict": {}
 }
-````
+```
 ## Usage
 
 Run the script and use a cron job to regularly check the vehicle status.
@@ -84,7 +84,6 @@ Run the script and use a cron job to regularly check the vehicle status.
 crontab -e
 
 */5 * * * * /usr/bin/python3 /home/pi/Divera_FMS/main.py >> /home/pi/Divera_FMS/log.txt 2>&1
-
-````
+```
 This cron job checks the vehicle status every 5 minutes and logs the output to the file log.txt.
 
