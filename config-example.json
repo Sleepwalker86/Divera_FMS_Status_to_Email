@@ -11,8 +11,8 @@
         "reciver2@example.de"
     ],
     "push_enable": "true",
-    "message_users_fremdschluessel": "1000",
-    "message_rics": "",
+    "message_users_fremdschluessel": "1000,1001",
+    "message_rics": "group1,group2",
     "status_dict": {
 
     }
