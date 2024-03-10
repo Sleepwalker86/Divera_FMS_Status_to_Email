@@ -10,6 +10,7 @@ import logging
 # Logger konfigurieren
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
+
 # Erhalte den absoluten Pfad zur aktuellen Datei
 current_directory = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(current_directory, 'config.json')
@@ -21,6 +22,7 @@ def load_config():
         print("Ein Beispiel für die Konfigurationsdatei könnte wie folgt aussehen:")
         print("{")
         print("    \"api_key\": \"YOUR-API-KEY\",")
+        print("    \"email_enable\": \"true\",")
         print("    \"sender_email\": \"sender@example.de\",")
         print("    \"email_password\": \"YOUR-EMAIL-PASSWORD\",")
         print("    \"smtp_server\": \"smtp.gmail.com\",")
@@ -29,8 +31,9 @@ def load_config():
         print("        \"reciver1@example.de\",")
         print("        \"reciver2@example.de\"")
         print("    ],")
+        print("    \"push_enable\": \"true\",")
         print("    \"message_users_fremdschluessel\": \"1000,1001\",")
-        print("    \"message_rics\": \"22,23\",")
+        print("    \"message_rics\": \"group1,group2\",")
         print("    \"status_dict\": {")
         print("        ")
         print("    }")
@@ -39,7 +42,6 @@ def load_config():
     with open(CONFIG_FILE) as f:
         config = json.load(f)
     return config
-
 
 def save_config(config):
     with open(CONFIG_FILE, 'w') as f:
@@ -93,8 +95,11 @@ def send_push(shortname, message_text, api_key, message_users_fremdschluessel, m
         logger.info("Keine Divera Rics angegeben. Mitteilung wird nicht versendet.")
 
 def main():
+    # Parameter aus der config.json lesen
     config = load_config()
     api_key = config["api_key"]
+    email_enable = config["email_enable"]
+    push_enable = config["push_enable"]
     message_users_fremdschluessel = config["message_users_fremdschluessel"]
     message_rics = config["message_rics"]
     sender_email = config["sender_email"]
@@ -102,6 +107,8 @@ def main():
     password = config["email_password"]
     smtp_server = config["smtp_server"]
     smtp_port = config["smtp_port"]
+
+    # URL definieren
     url = f"https://app.divera247.com/api/v2/pull/vehicle-status?accesskey={api_key}"
 
     logger.info("Skript gestartet.")
@@ -131,13 +138,15 @@ def main():
                             message = f"Ein Fahrzeug ({shortname}) ist aktuell nicht einsatzbereit. \nID: {id},\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
 
                         # E-Mail senden
-                        if receiver_emails:
+                        if receiver_emails & email_enable:
                             # E-Mail senden
                             send_email(message, shortname, sender_email, receiver_emails, password, smtp_server, smtp_port)
                         else:
                             logger.info("Keine Empfänger-E-Mail-Adressen angegeben. E-Mail wird nicht versendet.")
-                        # Pushnachricht senden
-                        send_push(shortname, message, api_key,message_users_fremdschluessel,message_rics)
+
+                        if push_enable:
+                            # Pushnachricht senden
+                            send_push(shortname, message, api_key,message_users_fremdschluessel,message_rics)
                     # Aktualisiere den Status für die ID
                     status_dict[id] = fmsstatus
 
