@@ -4,6 +4,7 @@ Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Ben
 
 ## Voraussetzungen
 Python 3
+
 Module: urllib.request, json, smtplib, email.mime, os, datetime, logging
 
 ## Konfiguration
