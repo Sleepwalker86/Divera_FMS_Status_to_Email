@@ -1,28 +1,22 @@
-# Divera FMS Status per Email oder Divera 24/7 Mitteilung senden bei Wechsel von ungleich 6 -> 6 oder 6 -> ungleich 6.
+# Divera FMS Status Fahrzeugstatusüberwachungs Skript Divera 24/7
 
-Dieses Script sendet eine Email oder eine Divera Mitteilung an eine E-Mail Empfängerliste, eine User Fremdschlüssel Liste oder eine RIC Liste wenn der Status sich von ungleich 6 -> 6 oder von 6 -> ungleich 6 ändert.
+Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Benutzer per E-Mail und Push-Nachricht, wenn ein Fahrzeugstatus von oder zu 6 wechselt.
 
-Kopiert die config-example.json zu config.json und passt die Beispiel Parameter an.
+Voraussetzungen
+Python 3
+Module: urllib.request, json, smtplib, email.mime, os, datetime, logging
+Konfiguration
+Das Skript erwartet eine Konfigurationsdatei config.json, in der die erforderlichen Informationen wie API-Schlüssel, E-Mail-Einstellungen und Empfängeradressen festgelegt sind. Eine Beispieldatei example-config.json ist im Repository enthalten. Sie müssen diese Datei kopieren und entsprechend Ihren Informationen anpassen.
 
-Beispiel Config:
+cp example-config.json config.json
 
-{
-    "_comment": "Diese Datei bitte kopieren und entsprechend anpassen bzw. ausfüllen. STATUS_DICT nicht ändern. Anschließend die datei in config.json umbenennen!",
-    "api_key": "YOUR-API-KEY",
-    "sender_email": "sender@example.de",
-    "email_password": "YOUR-EMAIL-PASSWORD",
-    "smtp_server": "smtp.gmail.com",
-    "smtp_port": 465,
-    "receiver_emails": [
-        "reciver1@example.de",
-        "reciver2@example.de"
-    ],
-    "message_users_fremdschluessel": "1000",
-    "message_rics": "",
-    "status_dict": {
-    }
-}
 
-## Der Cronjob zum starten könnte so aussehen (contab -e):
-Alle 5 Min prüfen ob sich ein Fahrzeug Status geändert hat
+Verwendung
+Führen Sie das Skript aus, und verwenden Sie einen Cronjob, um regelmäßig den Fahrzeugstatus zu überprüfen.
+
 */5 * * * * /usr/bin/python3 /home/pi/Divera_FMS/main.py >> /home/pi/Divera_FMS/log.txt 2>&1
+
+Dieser Cronjob überprüft alle 5 Minuten den Fahrzeugstatus und protokolliert die Ausgabe in die Datei log.txt.
+
+
+
