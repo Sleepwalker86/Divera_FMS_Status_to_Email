@@ -47,12 +47,11 @@ def load_config():
 def save_config(config):
     with open(CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=4)
-def send_message(title, text, address, private_mode, notification_type, send_push, send_mail, ts_publish, archive, ts_archive, group, user_cluster_relation, p_api_key):
+def send_message(title, text, private_mode, notification_type, send_push, send_mail, ts_publish, archive, ts_archive, group, user_cluster_relation, p_api_key):
     message_data = {
         "News": {
             "title": title,
             "text": text,
-            "address": address,
             "private_mode": private_mode,
             "notification_type": notification_type,
             "send_push": send_push,
@@ -64,16 +63,16 @@ def send_message(title, text, address, private_mode, notification_type, send_pus
             "user_cluster_relation": user_cluster_relation
         }
     }
-
+    logging.info("Test.")
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json"
     }
 
-    url = f"https://app.divera247.com/api/v2/news?accesskey={p_api_key}"
+    message_url = f"https://app.divera247.com/api/v2/news?accesskey={p_api_key}"
 
     try:
-        req = urllib.request.Request(url, method='POST', headers=headers)
+        req = urllib.request.Request(message_url, method='POST', headers=headers)
         data = json.dumps(message_data).encode('utf-8')
         response = urllib.request.urlopen(req, data=data)
         result = json.loads(response.read().decode('utf-8'))
@@ -146,10 +145,14 @@ def main():
     password = config["email_password"]
     smtp_server = config["smtp_server"]
     smtp_port = config["smtp_port"]
+    auto_archiv = config["auto_archiv"]
     autoarchive_days = config.get('autoarchive_days', 0)
     autoarchive_hours = config.get('autoarchive_hours', 0)
     autoarchive_minutes = config.get('autoarchive_minutes', 0)
     autoarchive_seconds = config.get('autoarchive_seconds', 0)
+    send_push = config["send_push"]
+    send_mail = config["send_mail"]
+    notification_type = config["notification_type"]
     message_titel = config["message_titel"]
 
     # URL definieren
@@ -165,11 +168,14 @@ def main():
     try:
         with urllib.request.urlopen(url) as response:
             data = json.loads(response.read().decode())
+            logger.info(data)
             for item in data["data"]:
                 id = str(item["id"])  # ID als Zeichenkette speichern
                 fullname = item["fullname"]
                 shortname = item["shortname"]
                 fmsstatus = item["fmsstatus"]
+
+                logger.info("Debug2")
 
                 # Wenn die ID noch nicht im status_dict ist, füge sie hinzu
                 if id not in status_dict:
@@ -178,7 +184,8 @@ def main():
                     print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | ID wurde hinzugefügt. Aktueller status_dict:", status_dict)
                 else:
                     # Wenn sich der Status von 6 auf != 6 oder von !=6 auf 6 ändert, sende eine E-Mail und aktualisiere den Status
-                    if (status_dict[id] == 6 and fmsstatus != 6) or (status_dict[id] != 6 and fmsstatus == 6):
+                    #if (status_dict[id] == 6 and fmsstatus != 6) or (status_dict[id] != 6 and fmsstatus == 6):
+                    if True:
                         if status_dict[id] == 6:
                             message = f"Ein Fahrzeug ({shortname}) ist jetzt wieder einsatzbereit. \nID: {id},\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
                         else:
@@ -193,10 +200,10 @@ def main():
                             logger.info("Keine Empfänger-E-Mail-Adressen angegeben. E-Mail wird nicht versendet.")
 
                         if push_enable:
+                            logger.info("Push")
                             # Pushnachricht senden
                             #send_push(shortname, message, api_key,message_users_fremdschluessel,message_rics)
-                            send_message(message_titel, message, "Raum 1.23", True, 3, False, False, ts_publish,
-                                         True, ts_archive, [138728], [],p_api_key)
+                            send_message(message_titel, message, True, notification_type, send_push, send_mail, ts_publish, auto_archiv, ts_archive, [138728], [], p_api_key)
 
                     # Aktualisiere den Status für die ID
                     status_dict[id] = fmsstatus
@@ -207,6 +214,7 @@ def main():
 
     except Exception as e:
         logger.error("Fehler beim Abrufen der Daten oder beim Senden der E-Mail:", e)
+
 if __name__ == "__main__":
     main()
     logger.info("Script erfolgreich ausgeführt!")
