@@ -1,6 +1,7 @@
 # Fahrzeugstatusüberwachungs Skript für Divera 24/7
 
-Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Benutzer per E-Mail und Push-Nachricht, wenn ein Fahrzeugstatus von oder zu 6 wechselt.
+Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Benutzer per E-Mail und Push-Nachricht,
+wenn ein Fahrzeugstatus von oder zum Status 6 wechselt.
 
 ## Voraussetzungen
 Python 3
@@ -9,7 +10,8 @@ Module: urllib.request, json, smtplib, email.mime, os, datetime, logging
 
 ## Konfiguration
 Das Skript erwartet eine Konfigurationsdatei config.json, in der die erforderlichen Informationen wie API-Schlüssel, E-Mail-Einstellungen und Empfängeradressen festgelegt sind. Eine Beispieldatei example-config.json ist im Repository enthalten.
-Mit dem Parametern "email_enable" und "push_enable" können die Funktionen aktiviert (true) bzw. deaktiviert (false) werden
+Mit den Parametern "email_enable" und "push_enable" können die Funktionen aktiviert (true) bzw. deaktiviert (false) werden.
+
 Sie müssen diese Datei kopieren und entsprechend Ihren Informationen anpassen.
 ```bash
 cp example-config.json config.json
@@ -39,11 +41,10 @@ Führen Sie das Skript aus, und verwenden Sie einen Cronjob, um regelmäßig den
 ```bash
 crontab -e
 
-*/5 * * * * /usr/bin/python3 /home/pi/Divera_FMS/main.py >> /home/pi/Divera_FMS/log.txt 2>&1
+*/5 * * * * /usr/bin/python3 /home/pi/Divera_FMS_Status_to_Email/main.py >> /home/pi/Divera_FMS_Status_to_Email/log.txt 2>&1
 ```
 
 Dieser Cronjob überprüft alle 5 Minuten den Fahrzeugstatus und protokolliert die Ausgabe in die Datei log.txt.
-
 
 
 # Vehicle Status Monitoring Script for Divera 24/7
@@ -89,7 +90,7 @@ Run the script and use a cron job to regularly check the vehicle status.
 ```bash
 crontab -e
 
-*/5 * * * * /usr/bin/python3 /home/pi/Divera_FMS/main.py >> /home/pi/Divera_FMS/log.txt 2>&1
+*/5 * * * * /usr/bin/python3 /home/pi/Divera_FMS_Status_to_Email/main.py >> /home/pi/Divera_FMS_Status_to_Email/log.txt 2>&1
 ```
 This cron job checks the vehicle status every 5 minutes and logs the output to the file log.txt.
 
