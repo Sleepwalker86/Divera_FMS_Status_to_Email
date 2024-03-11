@@ -6,6 +6,7 @@ from email.mime.text import MIMEText
 import os
 from datetime import datetime
 import logging
+import time
 
 # Logger konfigurieren
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s: %(message)s')
@@ -46,6 +47,43 @@ def load_config():
 def save_config(config):
     with open(CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=4)
+def send_message(title, text, address, private_mode, notification_type, send_push, send_mail, ts_publish, archive, ts_archive, group, user_cluster_relation, p_api_key):
+    message_data = {
+        "News": {
+            "title": title,
+            "text": text,
+            "address": address,
+            "private_mode": private_mode,
+            "notification_type": notification_type,
+            "send_push": send_push,
+            "send_mail": send_mail,
+            "ts_publish": ts_publish,
+            "archive": archive,
+            "ts_archive": ts_archive,
+            "group": group,
+            "user_cluster_relation": user_cluster_relation
+        }
+    }
+
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json"
+    }
+
+    url = f"https://app.divera247.com/api/v2/news?accesskey={p_api_key}"
+
+    try:
+        req = urllib.request.Request(url, method='POST', headers=headers)
+        data = json.dumps(message_data).encode('utf-8')
+        response = urllib.request.urlopen(req, data=data)
+        result = json.loads(response.read().decode('utf-8'))
+        if 'status' in result and result['status'] == 'success':
+            logging.info("Message sent successfully.")
+        else:
+            logging.error("Failed to send message. Response: %s", result)
+    except Exception as e:
+        logging.error("An error occurred while sending message: %s", e)
+
 
 def send_email(content,shortname, sender_email, receiver_emails, password, smtp_server, smtp_port):
     # E-Mail Inhalt erstellen
@@ -98,6 +136,7 @@ def main():
     # Parameter aus der config.json lesen
     config = load_config()
     api_key = config["api_key"]
+    p_api_key = config["p_api_key"]
     email_enable = config["email_enable"]
     push_enable = config["push_enable"]
     message_users_fremdschluessel = config["message_users_fremdschluessel"]
@@ -107,6 +146,11 @@ def main():
     password = config["email_password"]
     smtp_server = config["smtp_server"]
     smtp_port = config["smtp_port"]
+    autoarchive_days = config.get('autoarchive_days', 0)
+    autoarchive_hours = config.get('autoarchive_hours', 0)
+    autoarchive_minutes = config.get('autoarchive_minutes', 0)
+    autoarchive_seconds = config.get('autoarchive_seconds', 0)
+    message_titel = config["message_titel"]
 
     # URL definieren
     url = f"https://app.divera247.com/api/v2/pull/vehicle-status?accesskey={api_key}"
@@ -114,6 +158,9 @@ def main():
     logger.info("Skript gestartet.")
     # Status jeder ID speichern
     status_dict = config.get("status_dict", {})
+
+    ts_publish = int(time.time())  # Aktueller Unix-Zeitstempel
+    ts_archive = int(time.time()) + autoarchive_days * 86400 + autoarchive_hours * 3600 + autoarchive_minutes * 60 + autoarchive_seconds
 
     try:
         with urllib.request.urlopen(url) as response:
@@ -140,13 +187,17 @@ def main():
                         # E-Mail senden
                         if receiver_emails and email_enable:
                             # E-Mail senden
-                            send_email(message, shortname, sender_email, receiver_emails, password, smtp_server, smtp_port)
+                            #send_email(message, shortname, sender_email, receiver_emails, password, smtp_server, smtp_port)
+                            pass
                         else:
                             logger.info("Keine Empfänger-E-Mail-Adressen angegeben. E-Mail wird nicht versendet.")
 
                         if push_enable:
                             # Pushnachricht senden
-                            send_push(shortname, message, api_key,message_users_fremdschluessel,message_rics)
+                            #send_push(shortname, message, api_key,message_users_fremdschluessel,message_rics)
+                            send_message(message_titel, message, "Raum 1.23", True, 3, False, False, ts_publish,
+                                         True, ts_archive, [138728], [],p_api_key)
+
                     # Aktualisiere den Status für die ID
                     status_dict[id] = fmsstatus
 
