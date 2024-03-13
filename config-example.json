@@ -1,22 +1,24 @@
 {
-    "_comment": "Diese Datei bitte kopieren und entsprechend anpassen bzw. ausfüllen. STATUS_DICT nicht ändern. Anschließend die datei in config.json umbenennen!",
-    "api_key": "YOUR-API-KEY",
-    "autoarchive_days": 0,
+    "api_key": "DEIN-PRIVATER-API-KEY",
+    "mode": 2,
+    "destination_fms": 2,
+    "auto_archiv": true,
+    "autoarchive_days": 1,
     "autoarchive_hours": 0,
     "autoarchive_minutes": 0,
     "autoarchive_seconds": 0,
-    "email_enable": "true",
-    "sender_email": "sender@example.de",
-    "email_password": "YOUR-EMAIL-PASSWORD",
-    "smtp_server": "smtp.gmail.com",
-    "smtp_port": 465,
-    "receiver_emails": [
-        "reciver1@example.de",
-        "reciver2@example.de"
+    "send_push": true,
+    "send_mail": true,
+    "notification_type": "4",
+    "private_mode": true,
+    "users_primaerschluessel": [
+        "220053",
+        "220054"
     ],
-    "push_enable": "true",
-    "message_users_fremdschluessel": "1000,1001",
-    "message_rics": "group1,group2",
-    "status_dict": {
-    }
+    "groups_divera": [
+        "138728",
+        "138729"
+    ],
+    "message_titel": "\u00c4nderung Fahrzeugstatus!",
+    "status_dict": {}
 }
