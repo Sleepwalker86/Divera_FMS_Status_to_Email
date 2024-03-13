@@ -4,7 +4,9 @@ Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Ben
 wenn ein Fahrzeugstatus wechselt. Es gibt verschiedene Modis um das versenden der Mitteilung anzustoßen:
 
 Modus 1 = Wenn sich der Status von 6 auf ungleich 6 oder von ungleich 6 auf 6 ändert wird eine Mitteilung gesendet.
+
 Modus 2 = Bei jeder Statusänderung eine Mitteilung senden.
+
 Modus 3 = Sendet eine Mitteilung, wenn ein bestimmter Zielstatus erreicht wird.
 
 ## Voraussetzungen
@@ -15,6 +17,7 @@ Module: urllib.request, json, os, datetime, time, logging
 ## Konfiguration
 Das Skript erwartet eine Konfigurationsdatei config.json, in der die erforderlichen Informationen wie API-Schlüssel, Empfängergruppen etc. festgelegt sind.
 Eine config-example.json ist dem Repository beigefügt.
+
 Im Repository ist eine setup.py enthalten die dir bei der erstellung der Konfigurationsdatei hilft.
 
 Das Script läuft auf einem Linux basiertem System wie zb. ein Raspberry Pi.
