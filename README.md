@@ -20,6 +20,28 @@ Eine config-example.json ist dem Repository beigefügt.
 
 Im Repository ist eine setup.py enthalten die dir bei der erstellung der Konfigurationsdatei hilft.
 
+Die setup.py fordert folgende Infos:
+```
+DIVERA 24/7 Setup Hilfe.
+Dieses Setup hilft dir die korrekte Config Datei für das Divera Skript zu erstellen. Bitte trage deine Daten Schritt für Schritt ein.
+
+Bitte geben Sie den Privaten API-Schlüssel aus deinem Divera Account ein. (default: DEIN-API-KEY):
+Bitte wählen Sie einen Modus. (default: 2):
+Bitte geben Sie den Ziel-FMS-Status ein. (default: 2):
+Soll die Autoarchivierung für die Mitteilungen aktiviert werden? (true/false, default: false):
+Bitte geben Sie die Anzahl der Tage für die Autoarchivierung ein. (default: 1):
+Bitte geben Sie die Anzahl der Stunden für die Autoarchivierung ein. (default: 0):
+Bitte geben Sie die Anzahl der Minuten für die Autoarchivierung ein. (default: 0):
+Bitte geben Sie die Anzahl der Sekunden für die Autoarchivierung ein. (default: 0):
+Soll das Senden von Push-Benachrichtigungen aktiviert werden? (true/false, default: false):
+Soll das Senden von E-Mails aktiviert werden? (true/false, default: false):
+Bitte geben Sie den Benachrichtigungstyp ein (default: 4):
+Soll der private Modus für die Mitteilung aktiviert werden? (true/false, default: false):
+Bitte geben Sie den Primärschlüssel des Benutzers ein. (default: 220053):
+Bitte geben Sie die Divera-Gruppen-ID ein. (default: 138728):
+Bitte geben Sie den Titel der Nachricht ein. (default: Änderung Fahrzeugstatus!):
+```
+
 Das Script läuft auf einem Linux basiertem System wie zb. ein Raspberry Pi.
 Um das Script zu konfigurieren führe folgende Befehle aus:
 
