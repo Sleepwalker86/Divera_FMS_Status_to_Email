@@ -1,4 +1,50 @@
 import json
+import os
+import subprocess
+
+def check_and_install_module(module_name):
+    try:
+        __import__(module_name)
+        print(f"{module_name} ist bereits installiert.")
+    except ImportError:
+        print(f"{module_name} wird installiert...")
+        subprocess.check_call(["pip", "install", module_name])
+
+def check_and_install_modules(module_names):
+    for module_name in module_names:
+        check_and_install_module(module_name)
+
+def create_service():
+    current_directory = os.getcwd()
+    service_content = f'''[Unit]
+Description=Divera WebSocket Dienst
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 {current_directory}/main.py
+WorkingDirectory={current_directory}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+'''
+
+    with open("/etc/systemd/system/divera_websocket.service", "w") as f:
+        f.write(service_content)
+
+    # Reload systemd daemon
+    os.system("sudo systemctl daemon-reload")
+
+    # Starte den Dienst
+    os.system("sudo systemctl start divera_websocket")
+    print("Divera WebSocket Dienst erfolgreich gestartet!")
+
+    # Aktiviere den Dienst, um beim Booten zu starten
+    os.system("sudo systemctl enable divera_websocket")
+    print("Divera WebSocket Dienst aktiviert, um beim Booten zu starten!")
+
+    # Überprüfe den Status des Dienstes
+    os.system("sudo systemctl status divera_websocket")
 
 def create_config():
     config = {}
@@ -45,5 +91,27 @@ def create_config():
     with open("config.json", "w") as f:
         json.dump(config, f, indent=4)
 
-if __name__ == "__main__":
+def main():
+    # Überprüfe und installiere erforderliche Module
+    required_modules = [
+        "asyncio",
+        "json",
+        "logging",
+        "websockets",
+        "aiohttp",
+        "os",
+        "time",
+        "urllib",
+        "datetime"
+    ]
+    check_and_install_modules(required_modules)
+    print("Alle erforderlichen Module sind installiert.")
+
+    # Erstelle Konfigurationsdatei
     create_config()
+
+    # Erstelle den Dienst
+    create_service()
+
+if __name__ == "__main__":
+    main()
