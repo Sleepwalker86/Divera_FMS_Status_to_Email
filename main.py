@@ -156,28 +156,27 @@ async def main(message):
                             if id not in status_dict:
                                 status_dict[id] = fmsstatus
                                 print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Fahrzeug: {shortname} wurde hinzugefügt. Aktueller Status:", status_dict[id])
-                            else:
-                                # Hier Senden der Nachricht
-                                if mode == 1:
-                                    # Wenn sich der Status von 6 auf != 6 oder von !=6 auf 6 ändert, sende eine Mitteilung und aktualisiere den Status.
-                                    if (status_dict[vehicle_id] == 6 and fmsstatus_id != 6) or (status_dict[vehicle_id] != 6 and fmsstatus_id == 6):
-                                        message = f"Das Fahrzeug ({shortname}) hat in den Status: {fmsstatus} gewechselt.\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
-                                        # Funktion zum senden der Mitteilung aufrufen.
-                                        send_message(message_titel, message, private_mode, notification_type, send_push, send_mail, ts_publish, auto_archiv, archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoarchive_seconds), groups_divera, users_primaerschluessel, api_key)
-                                elif mode == 2:
-                                    # Bei jeder Statusänderung eine Mitteilung senden.
-                                    if fmsstatus_id != status_dict[vehicle_id]:
-                                        message = f"Das Fahrzeug ({shortname}) hat in den Status: {fmsstatus} gewechselt.\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
-                                        # Funktion zum senden der Mitteilung aufrufen.
-                                        send_message(message_titel, message, private_mode, notification_type, send_push, send_mail, ts_publish, auto_archiv, archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoarchive_seconds), groups_divera, users_primaerschluessel, api_key)
-                                elif mode == 3:
-                                    # Wenn in den wunsch Status gewechselt wird.
-                                    if fmsstatus_id != status_dict[vehicle_id] and fmsstatus_id == destination_fms:
-                                        message = f"Das Fahrzeug ({shortname}) hat in den Status: {fmsstatus} gewechselt.\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
-                                        # Funktion zum senden der Mitteilung aufrufen.
-                                        send_message(message_titel, message, private_mode, notification_type, send_push, send_mail, ts_publish, auto_archiv, archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoarchive_seconds), groups_divera, users_primaerschluessel, api_key)
-                                # Aktualisiere den Status für die ID in der config.json.
-                                status_dict[id] = fmsstatus
+                            # Hier Senden der Nachricht
+                            if mode == 1:
+                                # Wenn sich der Status von 6 auf != 6 oder von !=6 auf 6 ändert, sende eine Mitteilung und aktualisiere den Status.
+                                if (status_dict[vehicle_id] == 6 and fmsstatus_id != 6) or (status_dict[vehicle_id] != 6 and fmsstatus_id == 6):
+                                    message = f"Das Fahrzeug ({shortname}) hat in den Status: {fmsstatus} gewechselt.\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
+                                    # Funktion zum senden der Mitteilung aufrufen.
+                                    send_message(message_titel, message, private_mode, notification_type, send_push, send_mail, ts_publish, auto_archiv, archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoarchive_seconds), groups_divera, users_primaerschluessel, api_key)
+                            elif mode == 2:
+                                # Bei jeder Statusänderung eine Mitteilung senden.
+                                if fmsstatus_id != status_dict[vehicle_id]:
+                                    message = f"Das Fahrzeug ({shortname}) hat in den Status: {fmsstatus} gewechselt.\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
+                                    # Funktion zum senden der Mitteilung aufrufen.
+                                    send_message(message_titel, message, private_mode, notification_type, send_push, send_mail, ts_publish, auto_archiv, archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoarchive_seconds), groups_divera, users_primaerschluessel, api_key)
+                            elif mode == 3:
+                                # Wenn in den wunsch Status gewechselt wird.
+                                if fmsstatus_id != status_dict[vehicle_id] and fmsstatus_id == destination_fms:
+                                    message = f"Das Fahrzeug ({shortname}) hat in den Status: {fmsstatus} gewechselt.\n Fahrzeugname: {fullname},\n Kurzname: {shortname},\n FMS Status: {fmsstatus}\n"
+                                    # Funktion zum senden der Mitteilung aufrufen.
+                                    send_message(message_titel, message, private_mode, notification_type, send_push, send_mail, ts_publish, auto_archiv, archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoarchive_seconds), groups_divera, users_primaerschluessel, api_key)
+                            # Aktualisiere den Status für die ID in der config.json.
+                            status_dict[id] = fmsstatus
                     # Speichere den Status in der Konfigurationsdatei config.json.
                     config["status_dict"] = status_dict
                     save_config(config)

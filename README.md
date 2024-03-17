@@ -10,7 +10,7 @@ Modus 3 = Sendet eine Mitteilung, wenn ein bestimmter Zielstatus erreicht wird.
 ## Voraussetzungen
 Python 3
 
-Module: urllib.request, json, os, datetime, time, logging
+Module: urllib, json, os, datetime, time, logging, websockets, aiohttp, asyncio, subprocess
 
 ## Konfiguration
 Das Skript erwartet eine Konfigurationsdatei config.json, in der die erforderlichen Informationen wie API-Schlüssel, Empfängergruppen etc. festgelegt sind.
@@ -23,75 +23,62 @@ Um das Script zu konfigurieren führe folgende Befehle aus:
 ```bash
 apt install git
 
-mkdir Divera
-
-cd Divera
-
 git clone https://github.com/Sleepwalker86/Divera_FMS_Status_to_Message.git
+
+cd Divera_FMS_Status_to_Message
 
 python3 setup.py
 
 ```
 
 Die Konfigurationsdatei wird nach Abschluss des Setups im Verzeichnis Divera erstellt.
+Wenn Mitteilungen ausgelöst wurden finden Sie diese im Scriptverzeichnis in der Datei log.txt
 
 ## Verwendung
-Führen Sie das Skript aus, und verwenden Sie einen Cronjob, um regelmäßig den Fahrzeugstatus zu überprüfen.
+Das Script wird als service im Autostart hinterlegt und nimmt in Echtzeit den Fahrzeugstatus entgegen.
+Das Script wird somit einmal über den Service gestartet und läuft dann permanent im Hintergrund.
 
 ```bash
-crontab -e
+# Script starten
+service divera_websocket start
 
-# Diese Zeile am Ende der Datei einfügen und mit strg+o speichern und dann mit strg+x die Datei verlassen.
-*/5 * * * * /usr/bin/python3 /home/pi/Divera_FMS_Status_to_Email/main.py >> /home/pi/Divera_FMS_Status_to_Email/log.txt 2>&1
+# Scrip stoppen
+service divera_websocket stop
+
+# Script neustarten
+service divera_websocket restart
+
+# Script status
+service divera_websocket status
 ```
-
-Dieser Cronjob überprüft alle 5 Minuten den Fahrzeugstatus und protokolliert die Ausgabe in die Datei log.txt.
-
 
 # Vehicle Status Monitoring Script for Divera 24/7
 
-This Python script monitors the status of vehicles and notifies users via email and push notification when a vehicle status changes to or from 6.
+This Python script monitors the status of vehicles and notifies users via Divera messages when a vehicle status changes. There are different modes to trigger the message sending:
+
+Mode 1 = Sends a message when the status changes from 6 to not equal 6 or from not equal 6 to 6.
+Mode 2 = Sends a message for every status change.
+Mode 3 = Sends a message when a specific target status is reached.
 
 ## Requirements
 Python 3
 
-Modules: urllib.request, json, smtplib, email.mime, os, datetime, logging
+Modules: urllib, json, os, datetime, time, logging, websockets, aiohttp, asyncio, subprocess
 
 ## Configuration
-The script expects a configuration file `config.json` where the required information such as API key, email settings, and receiver addresses are set. An example file `example-config.json` is included in the repository.
-The parameters 'email_enable' and 'push_enable' can be used to enable (true) or disable (false) the respective functionalities.
-You need to copy this file and adjust it according to your information.
+The script expects a configuration file config.json, where necessary information such as API keys, recipient groups, etc., are defined.
+A config-example.json is included in the repository.
+The repository contains a setup.py that assists you in creating the configuration file.
+
+The script runs on a Linux-based system such as a Raspberry Pi.
+To configure the script, execute the following commands:
 
 ```bash
-cp example-config.json config.json
+apt install git
+
+git clone https://github.com/Sleepwalker86/Divera_FMS_Status_to_Message.git
+
+cd Divera_FMS_Status_to_Message
+
+python3 setup.py
 ```
-
-```json
-{
-    "api_key": "YOUR-API-KEY",
-    "email_enable": "true",
-    "sender_email": "sender@example.de",
-    "email_password": "YOUR-EMAIL-PASSWORD",
-    "smtp_server": "smtp.gmail.com",
-    "smtp_port": 465,
-    "receiver_emails": [
-        "receiver1@example.de",
-        "receiver2@example.de"
-    ],
-    "push_enable": "true",
-    "message_users_fremdschluessel": "1000,1001",
-    "message_rics": "group1, group2",
-    "status_dict": {}
-}
-```
-## Usage
-
-Run the script and use a cron job to regularly check the vehicle status.
-
-```bash
-crontab -e
-
-*/5 * * * * /usr/bin/python3 /home/pi/Divera_FMS_Status_to_Email/main.py >> /home/pi/Divera_FMS_Status_to_Email/log.txt 2>&1
-```
-This cron job checks the vehicle status every 5 minutes and logs the output to the file log.txt.
-

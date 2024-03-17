@@ -2,17 +2,28 @@ import json
 import os
 import subprocess
 
+def install_sudo():
+    print("sudo wird installiert...")
+    subprocess.check_call(["apt", "install", "sudo"])
+
+def update_upgrade():
+    print("Führe apt update durch...")
+    subprocess.check_call(["sudo", "apt", "update"])
+    print("Führe apt upgrade durch...")
+    subprocess.check_call(["sudo", "apt", "upgrade"])
+
 def check_and_install_module(module_name):
     try:
         __import__(module_name)
         print(f"{module_name} ist bereits installiert.")
     except ImportError:
         print(f"{module_name} wird installiert...")
-        subprocess.check_call(["pip", "install", module_name])
+        subprocess.check_call(["sudo", "apt", "install", f"python3-{module_name}"])
 
 def check_and_install_modules(module_names):
     for module_name in module_names:
         check_and_install_module(module_name)
+    print("Alle erforderlichen Module sind installiert.")
 
 def create_service():
     current_directory = os.getcwd()
@@ -56,7 +67,7 @@ def create_config():
     print("Modus 2 = Bei jeder Statusänderung eine Mitteilung senden.")
     print("Modus 3 = Wenn in den wunsch Status gewechselt wird.")
     # Die folgende Zeile setzt den Standardwert auf 2, falls keine Eingabe erfolgt
-    config["mode"] = int(input("Bitte wählen Sie einen Modus. (default: 2): ") or 2)
+    config["mode"] = int(input("Bitte wählen Sie einen Modus. (default: 1): ") or 1)
     print("Bitte wählen deinen Ziel Status falls du Modus 3 gewählt hast.")
     # Die folgende Zeile setzt den Standardwert auf 2, falls keine Eingabe erfolgt
     config["destination_fms"] = int(input("Bitte geben Sie den Ziel-FMS-Status ein. (default: 2): ") or 2)
@@ -83,29 +94,34 @@ def create_config():
     # Die folgende Zeile setzt den Standardwert auf ["220053"], falls keine Eingabe erfolgt
     config["users_primaerschluessel"] = [input("Bitte geben Sie den Primärschlüssel des Benutzers ein. (default: 220053): ") or "220053"]
     # Die folgende Zeile setzt den Standardwert auf ["138728"], falls keine Eingabe erfolgt
-    config["groups_divera"] = [input("Bitte geben Sie die Divera-Gruppen-ID ein. (default: 138728): ") or "138728"]
+    config["groups_divera"] = [input("ID der Gruppe (bedingt Benachrichtigungstyp = 3). Bitte geben Sie die Divera-Gruppen-ID ein. (default: 138728): ") or "138728"]
     # Die folgende Zeile setzt den Standardwert auf "Änderung Fahrzeugstatus!", falls keine Eingabe erfolgt
-    config["message_titel"] = input("Bitte geben Sie den Titel der Nachricht ein. (default: Änderung Fahrzeugstatus!): ") or "Änderung Fahrzeugstatus!"
+    config["message_titel"] = input("ID des Benutzers (bedingt Benachrichtigungstyp = 4). Bitte geben Sie den Titel der Nachricht ein. (default: Änderung Fahrzeugstatus!): ") or "Änderung Fahrzeugstatus!"
     config["status_dict"] = {}
 
     with open("config.json", "w") as f:
         json.dump(config, f, indent=4)
 
 def main():
+    # Installiere sudo
+    install_sudo()
+
+    # Update und Upgrade
+    update_upgrade()
+
     # Überprüfe und installiere erforderliche Module
     required_modules = [
+        "websockets",
+        "aiohttp",
         "asyncio",
         "json",
         "logging",
-        "websockets",
-        "aiohttp",
         "os",
         "time",
         "urllib",
         "datetime"
     ]
     check_and_install_modules(required_modules)
-    print("Alle erforderlichen Module sind installiert.")
 
     # Erstelle Konfigurationsdatei
     create_config()
