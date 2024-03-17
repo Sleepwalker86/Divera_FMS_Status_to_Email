@@ -4,7 +4,9 @@ Dieses Python-Skript überwacht den Status von Fahrzeugen und benachrichtigt Ben
 wenn ein Fahrzeugstatus wechselt. Es gibt verschiedene Modis um das versenden der Mitteilung anzustoßen:
 
 Modus 1 = Wenn sich der Status von 6 auf ungleich 6 oder von ungleich 6 auf 6 ändert wird eine Mitteilung gesendet.
+
 Modus 2 = Bei jeder Statusänderung eine Mitteilung senden.
+
 Modus 3 = Sendet eine Mitteilung, wenn ein bestimmter Zielstatus erreicht wird.
 
 ## Voraussetzungen
@@ -57,7 +59,9 @@ service divera_websocket status
 This Python script monitors the status of vehicles and notifies users via Divera messages when a vehicle status changes. There are different modes to trigger the message sending:
 
 Mode 1 = Sends a message when the status changes from 6 to not equal 6 or from not equal 6 to 6.
+
 Mode 2 = Sends a message for every status change.
+
 Mode 3 = Sends a message when a specific target status is reached.
 
 ## Requirements
