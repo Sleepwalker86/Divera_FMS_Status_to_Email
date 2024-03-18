@@ -107,7 +107,7 @@ def main():
     install_sudo()
 
     # Update und Upgrade
-    update_upgrade()
+    #update_upgrade()
 
     # Überprüfe und installiere erforderliche Module
     required_modules = [
