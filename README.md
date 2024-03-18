@@ -31,6 +31,10 @@ cd Divera_FMS_Status_to_Message
 
 python3 setup.py
 
+oder
+
+sudo python3 setup.py
+
 ```
 
 Die Konfigurationsdatei wird nach Abschluss des Setups im Verzeichnis Divera erstellt.
