@@ -84,5 +84,5 @@ git clone https://github.com/Sleepwalker86/Divera_FMS_Status_to_Message.git
 
 cd Divera_FMS_Status_to_Message
 
-python3 setup.py
+sudo python3 setup.py
 ```
