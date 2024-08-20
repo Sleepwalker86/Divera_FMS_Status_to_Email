@@ -81,21 +81,31 @@ def archive_time(autoarchive_days, autoarchive_hours, autoarchive_minutes, autoa
     return ts_archive
 
 async def authenticate_and_listen():
-    # Hole JWT-Token.
-    jwt_response = await fetch_jwt_token()
-    jwt = jwt_response['data']['jwt_ws']
+    while True:
+        try:
+            # Hole JWT-Token.
+            jwt_response = await fetch_jwt_token()
+            jwt = jwt_response['data']['jwt_ws']
 
-    # WebSocket-Verbindung herstellen
-    async with websockets.connect(WS_URL + '/ws') as websocket:
-        print('WebSocket-Verbindung herstellen')
+            # WebSocket-Verbindung herstellen
+            async with websockets.connect(WS_URL + '/ws') as websocket:
+                print('WebSocket-Verbindung hergestellt')
 
-        # Authentifizierungsdaten senden
-        auth_data = {'type': 'authenticate', 'payload': {'jwt': jwt}}
-        await websocket.send(json.dumps(auth_data))
+                # Authentifizierungsdaten senden
+                auth_data = {'type': 'authenticate', 'payload': {'jwt': jwt}}
+                await websocket.send(json.dumps(auth_data))
 
-        # Listen for incoming messages
-        async for message in websocket:
-            await main(message)
+                # Nachrichten empfangen und verarbeiten
+                async for message in websocket:
+                    await main(message)
+
+        except (websockets.ConnectionClosed, aiohttp.ClientError) as e:
+            logger.error(f"Verbindung unterbrochen: {e}")
+            await asyncio.sleep(5)  # Warten, bevor die Verbindung erneut versucht wird
+        except Exception as e:
+            logger.error(f"Ein Fehler ist aufgetreten: {e}")
+            await asyncio.sleep(5)  # Warten, bevor die Verbindung erneut versucht wird
+
 
 async def fetch_jwt_token():
     config = load_config()
@@ -186,5 +196,5 @@ async def main(message):
         print("Daten vom Typ: '", message_data.get('type') + " ' empfangen. Diese Daten werden nicht weiter verarbeitet.")
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(authenticate_and_listen())
+    asyncio.run(authenticate_and_listen())
     logger.info("Script erfolgreich ausgeführt!")

@@ -35,6 +35,7 @@ After=network.target
 ExecStart=/usr/bin/python3 {current_directory}/main.py
 WorkingDirectory={current_directory}
 Restart=always
+RuntimeMaxSec=86400
 
 [Install]
 WantedBy=multi-user.target
